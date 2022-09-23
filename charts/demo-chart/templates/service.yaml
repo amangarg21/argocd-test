@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sample-chart.fullname" . }}
+  labels:
+    {{- include "sample-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "sample-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "sample-chart.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "sample-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+[root@jenkinsmasterjenkinsmaster-infra-v1-129138 templates]# ll
+total 28
+-rw-r--r-- 1 root root 1651 Sep 19 13:42 deployment.yaml
+-rw-r--r-- 1 root root 1897 Sep 19 13:42 _helpers.tpl
+-rw-r--r-- 1 root root 1040 Sep 19 13:42 ingress.yaml
+-rw-r--r-- 1 root root 1601 Sep 19 13:42 NOTES.txt
+-rw-r--r-- 1 root root  217 Sep 19 13:42 serviceaccount.yaml
+-rw-r--r-- 1 root root  376 Sep 19 13:42 service.yaml
+drwxr-xr-x 2 root root 4096 Sep 19 13:42 tests
+[root@jenkinsmasterjenkinsmaster-infra-v1-129138 templates]# cat service
+cat: service: No such file or directory
+[root@jenkinsmasterjenkinsmaster-infra-v1-129138 templates]# cat service.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "sample-chart.fullname" . }}
+  labels:
+    {{- include "sample-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "sample-chart.selectorLabels" . | nindent 4 }}
