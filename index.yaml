@@ -3,6 +3,16 @@ entries:
   sample-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-09-23T06:49:30.760431513Z"
+    description: A Helm chart for Kubernetes
+    digest: 090c956de1c497526c8bfc2afa1b7e92440ce43c86a2634eaa9b0de409092572
+    name: sample-chart
+    type: application
+    urls:
+    - https://github.com/amangarg21/helm-charts-demo/releases/download/sample-chart-13.0.0/sample-chart-13.0.0.tgz
+    version: 13.0.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-09-23T02:48:57.012915019Z"
     description: A Helm chart for Kubernetes
     digest: 3b16108934c78b4e89b761528df1812a6977d2564c2d85fc9a49cca4dfa4981c
